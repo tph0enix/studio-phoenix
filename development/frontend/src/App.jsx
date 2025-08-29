@@ -9,7 +9,7 @@ export default function App() {
   return (
     <main style={{ padding: 24 }}>
       <h1>Studio Phoenix</h1>
-      <p>Default homepage deployed on Vercel.</p>
+      <p>Default homepage.</p>
       <h2>Users</h2>
       <pre>{JSON.stringify(users, null, 2)}</pre>
     </main>

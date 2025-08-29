@@ -1,35 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const api = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    fetch(`${api}/users`).then(r => r.json()).then(setUsers).catch(() => setUsers([]));
+  }, []);
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main style={{ padding: 24 }}>
+      <h1>Studio Phoenix</h1>
+      <p>Default homepage deployed on Vercel.</p>
+      <h2>Users</h2>
+      <pre>{JSON.stringify(users, null, 2)}</pre>
+    </main>
+  );
 }
-
-export default App

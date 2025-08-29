@@ -2,40 +2,23 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import pkg from "pg";
+import usersRouter from "./src/routes/users.js";
 
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: "../.env" });
 
-const { Pool } = pkg;
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // dev-friendly; tighten later
+app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-	connectionString: process.env.DATABASE_URL,
-})
+app.get("/health", (_req, res) => res.json({ ok: true }));
 
-app.get("/", (_req, res) => {
-	res.set("Cache-Control", "no-store");
-	res.send("Studio Phoenix server is running!");
-});
+app.use("/users", usersRouter);
 
-// user route
-app.get("/users", async (_req, res) => {
-	try {
-		const { rows } = await pool.query(
-			`SELECT key, email, role, created_at, updated_at
-			FROM public.users
-			ORDER BY created_at DESC`
-		);
-		res.json(rows);
-	} catch (err) {
-		console.error("DB error:", err.message);
-		res.status(500).json({ error: "DB query failed" });
-	}
-});
+import { errorHandler } from "./src/middleware/error.js";
+app.use(errorHandler);
 
 app.listen(port, () => {
-	console.log(`Listening on http://localhost:${port}`);
+  console.log(`API listening on http://localhost:${port}`);
 });

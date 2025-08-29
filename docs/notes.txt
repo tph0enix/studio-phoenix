@@ -59,3 +59,9 @@ npm install
 # edit App.jsx
 # update .env file in development/frontend with the VITE_API_URL
 npm run dev
+cd ~/Projects/studio-phoenix
+git add .
+git comit -m "feat: users table + API + Vite frontend"
+git push
+
+# deploy on Vercel

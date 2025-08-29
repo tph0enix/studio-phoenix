@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import pkg from "pg";
 
 dotenv.config({ path: '../.env' });
@@ -7,6 +8,9 @@ dotenv.config({ path: '../.env' });
 const { Pool } = pkg;
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors()); // dev-friendly; tighten later
+app.use(express.json());
 
 const pool = new Pool({
 	connectionString: process.env.DATABASE_URL,
@@ -17,13 +21,17 @@ app.get("/", (_req, res) => {
 	res.send("Studio Phoenix server is running!");
 });
 
-// quick DB test route
-app.get("/db-time", async (_req, res) => {
+// user route
+app.get("/users", async (_req, res) => {
 	try {
-		const { rows } = await pool.query("SELECT NOW() AS now");
-		res.json(rows[0]);
+		const { rows } = await pool.query(
+			`SELECT key, email, role, created_at, updated_at
+			FROM public.users
+			ORDER BY created_at DESC`
+		);
+		res.json(rows);
 	} catch (err) {
-		console.error(err);
+		console.error("DB error:", err.message);
 		res.status(500).json({ error: "DB query failed" });
 	}
 });

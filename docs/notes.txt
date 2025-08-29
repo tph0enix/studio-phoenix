@@ -1,0 +1,61 @@
+cd ~/Projects/studio-phoenix/development/app
+npm init -y
+npm install express
+touch server.js
+# edit server.js with new script
+npm install --save-dev nodemon
+# edit package.json with scripts, type, and dependencies
+
+# Test
+npm run dev
+
+# Edit docker-compose.yml
+cd ~/Projects/studio-phoenix/development/postgres
+docker compose up -d
+
+# Edit 00_create_databases.sql
+docker compose down -v # note: -v safe currently since no real data yet
+docker compose up -d
+
+# Verify it exists: 
+docker exec -it postgres-db-1 psql -U postgres
+
+# Exit: 
+\q
+
+# Add code to development/.env
+
+# Install client & dotenv; dotenv reads .env at startup, injects values into process.env which is Node's built-in way of accessing environmental variables
+cd ~/Projects/studio-phoenix/development/app
+npm install pg dotenv
+
+# update server.js to test database
+
+# run it
+npm run dev
+
+set up git at studio-phoenix as root
+
+# create 001_create_users.sql script
+cd ~/Projects/studio-phoenix/development/postgres
+docker exec -i postgres-db-1 psql -U postgres -d d_studio_phoenix_oltp < ./migrations/d_studio_phoenix_oltp/001_create_users.sql
+docker exec -it postgres-db-1 psql -U postgres -d d_studio_phoenix_olt -c "\d+ public.users"
+docker exec -it postgres-db-1 psql -U postgres -d d_studio_phoenix_oltp -c "INSERT INTO public.users (email, password_hash, role) VALUES ('tristan.phoenix@studiophoenix.ink', 'dummy-hash', 'admin') RETURNING key, email, role, created_at;"
+
+# add /users API route
+cd ~/Projects/studio-phoenix/development/app
+npm install cors
+
+# update server.js
+
+npm run dev
+
+# minimal frontend for Vercel
+cd ~/Projects/studio-phoenix/development
+npm create vite@latest frontend -- --template react
+cd frontend
+npm install
+
+# edit App.jsx
+# update .env file in development/frontend with the VITE_API_URL
+npm run dev

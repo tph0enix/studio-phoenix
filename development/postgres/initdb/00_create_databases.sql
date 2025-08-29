@@ -1,1 +1,3 @@
 CREATE DATABASE d_studio_phoenix_oltp;
+CREATE DATABASE d_studio_phoenix_olap;
+CREATE DATABASE d_studio_phoenix_hist;
